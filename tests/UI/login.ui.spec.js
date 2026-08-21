@@ -6,7 +6,7 @@ const BASEURL = 'https://app.thetestingacademy.com/playwright/ttacart/';
 
 test('show login page title', async ({ page }) => {
   await page.goto(BASEURL);
-
+  
   
   await expect(page.locator('.tta-brand-title')).toHaveText("TTACart");
 });
