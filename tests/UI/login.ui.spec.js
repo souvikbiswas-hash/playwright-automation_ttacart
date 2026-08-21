@@ -1,29 +1,36 @@
 // @ts-check
 import { test, expect } from '@playwright/test';
 
+
 const BASEURL = 'https://app.thetestingacademy.com/playwright/ttacart/';
 
-test('has title', async ({ page }) => {
+test('show login page title', async ({ page }) => {
   await page.goto(BASEURL);
 
-  // Expect a title "to contain" a substring.
+  
   await expect(page.locator('.tta-brand-title')).toHaveText("TTACart");
 });
 
-test.only('has username', async ({ page }) => {
+test('show username field', async ({ page }) => {
 
   await page.goto(BASEURL);
 
-  await expect(page.getByPlaceholder('Username')).toBeVisible();
+  await expect(page.locator('#user-name')).toBeVisible();
 
 });
 
-// test('get started link', async ({ page }) => {
-//   await page.goto(BASEURL);
+test('show password field', async ({ page }) => {
 
-//   // Click the get started link.
-//   await page.getByRole('link', { name: 'Get started' }).click();
+  await page.goto(BASEURL);
 
-//   // Expects page to have a heading with the name of Installation.
-//   await expect(page.getByRole('heading', { name: 'Installation' })).toBeVisible();
-// });
+  await expect(page.locator('#password')).toBeVisible();
+
+});
+
+test("Show Login button", async ({ page }) => {
+  await page.goto(BASEURL);
+
+  await expect(page.locator("#login-button")).toHaveText("Login");
+});
+
+
