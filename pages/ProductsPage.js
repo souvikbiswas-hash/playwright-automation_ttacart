@@ -160,14 +160,15 @@ class ProductsPage {
 
 }
 
+async openFirstProduct() {
 
-  async openFirstProduct() {
+    await this.products
+        .first()
+        .locator('[data-test="item-img-link"]')
+        .click();
 
-    await this.productNames
-      .first()
-      .click();
+}
 
-  }
 
 
   async openFirstProductUsingImage() {
