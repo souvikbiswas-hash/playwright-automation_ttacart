@@ -1,36 +1,41 @@
-// @ts-check
 import { test, expect } from '@playwright/test';
 
+const BASE_URL =
+  'https://app.thetestingacademy.com/playwright/ttacart/';
 
-const BASEURL = 'https://app.thetestingacademy.com/playwright/ttacart/';
+test.describe('Login UI Tests', () => {
 
-test('show login page title', async ({ page }) => {
-  await page.goto(BASEURL);
-  
-  
-  await expect(page.locator('.tta-brand-title')).toHaveText("TTACart");
+  test.beforeEach(async ({ page }) => {
+    await page.goto(BASE_URL);
+  });
+
+  test('Show Login Page title', async ({ page }) => {
+
+    await expect(page.locator('.tta-brand-title'))
+      .toHaveText('TTACart');
+
+  });
+
+  test('Show username field', async ({ page }) => {
+    await expect(
+      page.locator('#user-name')
+    ).toBeVisible();
+  });
+
+  test('Show password field', async ({ page }) => {
+    await expect(
+      page.locator('#password')
+    ).toBeVisible();
+  });
+
+  test('Verify Login button', async ({ page }) => {
+    await expect(
+      page.locator('#login-button')
+    ).toBeVisible();
+
+    await expect(
+      page.locator('#login-button')
+    ).toHaveText('Login');
+  });
+
 });
-
-test('show username field', async ({ page }) => {
-
-  await page.goto(BASEURL);
-
-  await expect(page.locator('#user-name')).toBeVisible();
-
-});
-
-test('show password field', async ({ page }) => {
-
-  await page.goto(BASEURL);
-
-  await expect(page.locator('#password')).toBeVisible();
-
-});
-
-test("Show Login button", async ({ page }) => {
-  await page.goto(BASEURL);
-
-  await expect(page.locator("#login-button")).toHaveText("Login");
-});
-
-

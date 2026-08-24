@@ -1,31 +1,35 @@
-module.exports = {
+const users = {
+
   standardUser: {
-    username: "standard_user",
-    password: "tta_secret",
+    username: 'standard_user',
+    password: 'tta_secret'
   },
 
   lockedUser: {
-    username: "locked_out_user",
-    password: "tta_secret",
+    username: 'locked_out_user',
+    password: 'tta_secret'
   },
 
   problemUser: {
-    username: "problem_user",
-    password: "tta_secret",
+    username: 'problem_user',
+    password: 'tta_secret'
   },
 
   performanceUser: {
-    username: "performance_glitch_user",
-    password: "tta_secret",
+    username: 'performance_glitch_user',
+    password: 'tta_secret'
   },
 
   errorUser: {
-    username: "error_user",
-    password: "tta_secret",
+    username: 'error_user',
+    password: 'tta_secret'
   },
 
   visualUser: {
-    username: "visual_user",
-    password: "tta_secret",
+    username: 'visual_user',
+    password: 'tta_secret'
   }
+
 };
+
+export default users;

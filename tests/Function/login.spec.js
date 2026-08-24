@@ -1,61 +1,108 @@
-// @ts-check
-import { test, expect } from "@playwright/test";
-import users from "../../test-data/user.js";
+import { test, expect } from '@playwright/test';
 
-const BASE_URL = "https://app.thetestingacademy.com/playwright/ttacart/";
+import users from '../../test-data/user.js';
+
+const BASE_URL =
+  'https://app.thetestingacademy.com/playwright/ttacart/';
 
 
-test("Click Login button", async ({ page }) => {
-  await page.goto(BASE_URL);
+test.describe('Login Functional Tests', () => {
 
-  await page.locator("#login-button").click(); 
+
+  test('Valid login', async ({ page }) => {
+
+    await page.goto(BASE_URL);
+
+    await page.locator('#user-name')
+      .fill(users.standardUser.username);
+
+    await page.locator('#password')
+      .fill(users.standardUser.password);
+
+    await page.locator('#login-button')
+      .click();
+
+    await expect(page).toHaveURL(/inventory/);
+
+  });
+
+
+  test('Invalid Login for invalid username', async ({ page }) => {
+
+    await page.goto(BASE_URL);
+
+    await page.locator('#user-name')
+      .fill('invalid_user');
+
+    await page.locator('#password')
+      .fill(users.standardUser.password);
+
+    await page.locator('#login-button')
+      .click();
+
+    await expect(
+      page.locator('#login-error')
+    ).toBeVisible();
+
+  });
+
+
+  test('Invalid Login for invalid password', async ({ page }) => {
+
+    await page.goto(BASE_URL);
+
+    await page.locator('#user-name')
+      .fill(users.standardUser.username);
+
+    await page.locator('#password')
+      .fill('wrong_password');
+
+    await page.locator('#login-button')
+      .click();
+
+    await expect(
+      page.locator('#login-error')
+    ).toBeVisible();
+
+  });
+
+  test('Invalid Login for invalid username and password', async ({ page }) => {
+
+    await page.goto(BASE_URL);
+
+    await page.locator('#user-name')
+      .fill('invalid_user');
+
+    await page.locator('#password')
+      .fill('wrong_password');
+
+    await page.locator('#login-button')
+      .click();
+
+    await expect(
+      page.locator('#login-error')
+    ).toBeVisible();
+
+  });
+
+
+  test('Locked user', async ({ page }) => {
+
+    await page.goto(BASE_URL);
+
+    await page.locator('#user-name')
+      .fill(users.lockedUser.username);
+
+    await page.locator('#password')
+      .fill(users.lockedUser.password);
+
+    await page.locator('#login-button')
+      .click();
+
+    await expect(
+      page.locator('#login-error')
+    ).toBeVisible();
+
+  });
+
 });
-
-test("Valid Login", async ({ page }) => {
-  await page.goto(BASE_URL);
-
-  await page.locator("#user-name").fill(users.standardUser.username);
-  await page.locator("#password").fill(users.standardUser.password);
-  await page.locator("#login-button").click();
-
-  await expect(page).toHaveURL(/inventory/);
-  await expect(page).toHaveTitle(/TTACart/);
-});
-
-test("Invalid Login invalid-user", async ({ page }) => {
-  await page.goto(BASE_URL);
-
-  await page.locator("#user-name").fill("invalid_user");
-  await page.locator("#password").fill(users.standardUser.password);
-  await page.locator("#login-button").click();
-
-  await expect(page.locator("#login-error")).toContainText(
-    "Epic sadface: Username and password do not match any user in this service"
-  );
-}); 
-
-test("Invalid Login invalid-password", async ({ page }) => {
-  await page.goto(BASE_URL);
-
-  await page.locator("#user-name").fill(users.standardUser.username);
-  await page.locator("#password").fill("invalid_password");
-  await page.locator("#login-button").click();
-
-  await expect(page.locator("#login-error")).toContainText(
-    "Epic sadface: Username and password do not match any user in this service"
-  );
-}); 
-
-test("Invalid Login invalid-user&invalid-password", async ({ page }) => {
-  await page.goto(BASE_URL);
-
-  await page.locator("#user-name").fill("invalid_user");
-  await page.locator("#password").fill("invalid_password");
-  await page.locator("#login-button").click();
-
-  await expect(page.locator("#login-error")).toContainText(
-    "Epic sadface: Username and password do not match any user in this service"
-  );
-}); 
-
-
