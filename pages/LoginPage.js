@@ -4,39 +4,45 @@ class LoginPage {
 
     this.page = page;
 
-    this.username =
-      page.locator('#user-name');
+    this.usernameInput =
+      page.locator("#user-name");
 
-    this.password =
-      page.locator('#password');
+    this.passwordInput =
+      page.locator("#password");
 
     this.loginButton =
-      page.locator('#login-button');
+      page.locator("#login-button");
 
     this.errorMessage =
-      page.locator('#login-error');
+      page.locator("#login-error");
 
     this.loginHint =
-      page.locator('.login-hint');
+      page.locator(".login-hint");
+
+    this.pageTitle =
+      page.locator(".tta-brand-title");
+
   }
 
 
   async open() {
 
-    await this.page.goto(
-      'https://app.thetestingacademy.com/playwright/ttacart/'
-    );
+    await this.page.goto("https://app.thetestingacademy.com/playwright/ttacart/");
 
   }
 
 
   async login(username, password) {
 
-    await this.username.fill(username);
+    await this.usernameInput
+      .fill(username);
 
-    await this.password.fill(password);
+    await this.passwordInput
+      .fill(password);
 
-    await this.loginButton.click();
+    await this.loginButton
+      .click();
+
   }
 
 }

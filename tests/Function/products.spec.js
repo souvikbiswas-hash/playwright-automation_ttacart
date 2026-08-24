@@ -1,158 +1,118 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from '@playwright/test';
 
-import users from "../../test-data/user.js";
-import products from "../../test-data/products.js";
+import users from '../../test-data/user.js';
+import products from '../../test-data/products.js';
+
+const { LoginPage } = require('../../pages/LoginPage.js');
+const { ProductsPage } = require('../../pages/ProductsPage.js');
 
 const productList = Object.values(products);
-
-const BASEURL =
-  "https://app.thetestingacademy.com/playwright/ttacart/";
-
 
 test.describe("Products Page Functional Tests", () => {
 
 
-  test.beforeEach(async ({ page }) => {
+ test.beforeEach(async ({ page }) => {
 
-    await page.goto(BASEURL);
+  const loginPage = new LoginPage(page);
 
-    await page.locator("#user-name")
-      .fill(users.standardUser.username);
+  await loginPage.open();
 
-    await page.locator("#password")
-      .fill(users.standardUser.password);
-
-    await page.locator("#login-button")
-      .click();
-
-    await expect(page)
-      .toHaveURL(/inventory/);
-
-  });
-
-
-  test("Open burger menu", async ({ page }) => {
-
-    await page.locator("#react-burger-menu-btn")
-      .click();
-
-    await expect(
-      page.locator("#sideMenu")
-    ).toBeVisible();
-
-  });
-
-
-  test("Close burger menu", async ({ page }) => {
-
-    await page.locator("#react-burger-menu-btn")
-      .click();
-
-    await expect(
-      page.locator("#sideMenu")
-    ).toBeVisible();
-
-    await page.locator("#react-burger-cross-btn")
-      .click();
-
-    await expect(
-      page.locator(".inventory_sidebar_link")
-    ).toBeHidden();
-
-  });
-
-
-  test("Add all products to cart", async ({ page }) => {
-
-  const productCards = page.locator(
-    '[data-test="inventory-item"]'
+  await loginPage.login(
+    users.standardUser.username,
+    users.standardUser.password
   );
 
-  await expect(productCards)
-    .toHaveCount(productList.length);
-
-  for (let i = 0; i < productList.length; i++) {
-
-    await productCards
-      .nth(i)
-      .locator(".item-btn")
-      .click();
-
-  }
-
-  await expect(
-    page.locator('[data-test="shopping-cart-badge"]')
-  ).toHaveText(String(productList.length));
+  await expect(page)
+    .toHaveURL(/inventory/);
 
 });
 
 
-  test("Remove all products from cart", async ({ page }) => {
+  test("Open burger menu", async ({ page }) => {
 
-  const productCards = page.locator(
-    '[data-test="inventory-item"]'
-  );
+  const productsPage = new ProductsPage(page);
 
-  await expect(productCards)
+  await productsPage.openBurgerMenu();
+
+  await expect(
+    productsPage.sideMenu
+  ).toBeVisible();
+
+});
+
+
+  test("Close burger menu", async ({ page }) => {
+
+  const productsPage = new ProductsPage(page);
+
+  await productsPage.openBurgerMenu();
+
+  await expect(
+    productsPage.sideMenu
+  ).toBeVisible();
+
+  await productsPage.closeBurgerMenu();
+
+  await expect(
+    productsPage.sidebarLinks
+  ).toBeHidden();
+
+});
+
+  test("Add all products to cart", async ({ page }) => {
+
+  const productsPage = new ProductsPage(page);
+
+  await expect(productsPage.products)
     .toHaveCount(productList.length);
 
-  for (let i = 0; i < productList.length; i++) {
+  await productsPage.addAllProducts();
 
-    await productCards
-      .nth(i)
-      .locator(".item-btn")
-      .click();
+  await expect(productsPage.cartBadge)
+    .toHaveText(String(productList.length));
 
-  }
+});
 
- 
-  await expect(
-    page.locator('[data-test="shopping-cart-badge"]')
-  ).toHaveText(String(productList.length));
+  test("Remove all products from cart", async ({ page }) => {
 
+  const productsPage = new ProductsPage(page);
 
-  for (let i = 0; i < productList.length; i++) {
+  await expect(productsPage.products)
+    .toHaveCount(productList.length);
 
-    await productCards
-      .nth(i)
-      .locator(".item-btn")
-      .click();
+  await productsPage.addAllProducts();
 
-  }
+  await expect(productsPage.cartBadge)
+    .toHaveText(String(productList.length));
 
- 
-  await expect(
-    page.locator('[data-test="shopping-cart-badge"]')
-  ).toBeHidden();
+  await productsPage.removeAllProducts();
+
+  await expect(productsPage.cartBadge)
+    .toBeHidden();
 
 });
 
   
   test("Open cart", async ({ page }) => {
 
-    await page.locator(
-      '[data-test="shopping-cart-link"]'
-    ).click();
+  const productsPage = new ProductsPage(page);
 
-    await expect(page)
-      .toHaveURL(/cart/);
+  await productsPage.openCart();
 
-  });
+  await expect(page)
+    .toHaveURL(/cart/);
+
+});
 
 test("Open product details using image", async ({ page }) => {
 
-  const firstProduct =
-    page.locator('[data-test="inventory-item"]')
-      .first();
+  const productsPage = new ProductsPage(page);
 
-  await firstProduct
-    .locator('[data-test="item-img-link"]')
-    .click();
+  await productsPage.openFirstProductUsingImage();
 
   await expect(page)
     .toHaveURL(/inventory-item/);
 
 });
-
 
 });

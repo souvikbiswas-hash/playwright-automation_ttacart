@@ -1,41 +1,59 @@
 import { test, expect } from '@playwright/test';
 
-const BASE_URL =
-  'https://app.thetestingacademy.com/playwright/ttacart/';
+const { LoginPage } = require('../../pages/LoginPage.js');
+
 
 test.describe('Login UI Tests', () => {
 
   test.beforeEach(async ({ page }) => {
-    await page.goto(BASE_URL);
+
+    const loginPage = new LoginPage(page);
+
+    await loginPage.open();
+
   });
+
 
   test('Show Login Page title', async ({ page }) => {
 
-    await expect(page.locator('.tta-brand-title'))
+    const loginPage = new LoginPage(page);
+
+    await expect(loginPage.pageTitle)
       .toHaveText('TTACart');
 
   });
 
+
   test('Show username field', async ({ page }) => {
-    await expect(
-      page.locator('#user-name')
-    ).toBeVisible();
+
+    const loginPage = new LoginPage(page);
+
+    await expect(loginPage.usernameInput)
+      .toBeVisible();
+
   });
+
 
   test('Show password field', async ({ page }) => {
-    await expect(
-      page.locator('#password')
-    ).toBeVisible();
+
+    const loginPage = new LoginPage(page);
+
+    await expect(loginPage.passwordInput)
+      .toBeVisible();
+
   });
 
-  test('Verify Login button', async ({ page }) => {
-    await expect(
-      page.locator('#login-button')
-    ).toBeVisible();
 
-    await expect(
-      page.locator('#login-button')
-    ).toHaveText('Login');
+  test('Verify Login button', async ({ page }) => {
+
+    const loginPage = new LoginPage(page);
+
+    await expect(loginPage.loginButton)
+      .toBeVisible();
+
+    await expect(loginPage.loginButton)
+      .toHaveText('Login');
+
   });
 
 });

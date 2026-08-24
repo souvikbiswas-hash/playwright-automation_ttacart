@@ -18,8 +18,8 @@ export default defineConfig({
 
   use: {
 
-    baseURL:
-      'https://app.thetestingacademy.com/playwright/ttacart/',
+   baseURL:
+  'https://app.thetestingacademy.com/playwright/ttacart/',
 
     headless: false,
 

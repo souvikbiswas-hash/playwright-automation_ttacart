@@ -2,25 +2,20 @@ import { test, expect } from '@playwright/test';
 
 import users from '../../test-data/user.js';
 
-const BASE_URL =
-  'https://app.thetestingacademy.com/playwright/ttacart/';
-
+const { LoginPage } = require('../../pages/LoginPage.js');
 
 test.describe('Login Functional Tests', () => {
 
-
   test('Valid login', async ({ page }) => {
 
-    await page.goto(BASE_URL);
+    const loginPage = new LoginPage(page);
 
-    await page.locator('#user-name')
-      .fill(users.standardUser.username);
+    await loginPage.open();
 
-    await page.locator('#password')
-      .fill(users.standardUser.password);
-
-    await page.locator('#login-button')
-      .click();
+    await loginPage.login(
+      users.standardUser.username,
+      users.standardUser.password
+    );
 
     await expect(page).toHaveURL(/inventory/);
 
@@ -29,19 +24,17 @@ test.describe('Login Functional Tests', () => {
 
   test('Invalid Login for invalid username', async ({ page }) => {
 
-    await page.goto(BASE_URL);
+    const loginPage = new LoginPage(page);
 
-    await page.locator('#user-name')
-      .fill('invalid_user');
+    await loginPage.open();
 
-    await page.locator('#password')
-      .fill(users.standardUser.password);
-
-    await page.locator('#login-button')
-      .click();
+    await loginPage.login(
+      'invalid_user',
+      users.standardUser.password
+    );
 
     await expect(
-      page.locator('#login-error')
+      loginPage.errorMessage
     ).toBeVisible();
 
   });
@@ -49,38 +42,35 @@ test.describe('Login Functional Tests', () => {
 
   test('Invalid Login for invalid password', async ({ page }) => {
 
-    await page.goto(BASE_URL);
+    const loginPage = new LoginPage(page);
 
-    await page.locator('#user-name')
-      .fill(users.standardUser.username);
+    await loginPage.open();
 
-    await page.locator('#password')
-      .fill('wrong_password');
-
-    await page.locator('#login-button')
-      .click();
+    await loginPage.login(
+      users.standardUser.username,
+      'wrong_password'
+    );
 
     await expect(
-      page.locator('#login-error')
+      loginPage.errorMessage
     ).toBeVisible();
 
   });
 
+
   test('Invalid Login for invalid username and password', async ({ page }) => {
 
-    await page.goto(BASE_URL);
+    const loginPage = new LoginPage(page);
 
-    await page.locator('#user-name')
-      .fill('invalid_user');
+    await loginPage.open();
 
-    await page.locator('#password')
-      .fill('wrong_password');
-
-    await page.locator('#login-button')
-      .click();
+    await loginPage.login(
+      'invalid_user',
+      'wrong_password'
+    );
 
     await expect(
-      page.locator('#login-error')
+      loginPage.errorMessage
     ).toBeVisible();
 
   });
@@ -88,19 +78,17 @@ test.describe('Login Functional Tests', () => {
 
   test('Locked user', async ({ page }) => {
 
-    await page.goto(BASE_URL);
+    const loginPage = new LoginPage(page);
 
-    await page.locator('#user-name')
-      .fill(users.lockedUser.username);
+    await loginPage.open();
 
-    await page.locator('#password')
-      .fill(users.lockedUser.password);
-
-    await page.locator('#login-button')
-      .click();
+    await loginPage.login(
+      users.lockedUser.username,
+      users.lockedUser.password
+    );
 
     await expect(
-      page.locator('#login-error')
+      loginPage.errorMessage
     ).toBeVisible();
 
   });

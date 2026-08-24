@@ -3,153 +3,203 @@ import { test, expect } from "@playwright/test";
 import users from "../../test-data/user.js";
 import products from "../../test-data/products.js";
 
-const productList = Object.values(products);
+const { LoginPage } = require("../../pages/LoginPage.js");
+const { ProductsPage } = require("../../pages/ProductsPage.js");
 
-const BASEURL =
-  "https://app.thetestingacademy.com/playwright/ttacart/";
+const productList = Object.values(products);
 
 test.describe("Products Page UI Tests", () => {
 
   test.beforeEach(async ({ page }) => {
 
-    await page.goto(BASEURL);
+    const loginPage = new LoginPage(page);
 
-    await page.locator("#user-name")
-      .fill(users.standardUser.username);
+    await loginPage.open();
 
-    await page.locator("#password")
-      .fill(users.standardUser.password);
-
-    await page.locator("#login-button")
-      .click();
+    await loginPage.login(
+      users.standardUser.username,
+      users.standardUser.password
+    );
 
     await expect(page)
       .toHaveURL(/inventory/);
 
   });
 
-
   test("Show burger menu", async ({ page }) => {
 
+    const productsPage = new ProductsPage(page);
+
     await expect(
-      page.locator("#react-burger-menu-btn")
+      productsPage.burgerMenuButton
     ).toBeVisible();
 
   });
 
-
   test("Show page title", async ({ page }) => {
 
+    const productsPage = new ProductsPage(page);
+
     await expect(
-      page.locator(".tta-brand-title")
+      productsPage.brandTitle
     ).toHaveText(/TTACart/);
 
   });
 
-
   test("Show cart button", async ({ page }) => {
 
+    const productsPage = new ProductsPage(page);
+
     await expect(
-      page.locator('[data-test="shopping-cart-link"]')
+      productsPage.cart
     ).toBeVisible();
 
   });
 
-
   test("Show Products as title", async ({ page }) => {
 
+    const productsPage = new ProductsPage(page);
+
     await expect(
-      page.locator(".page-title")
+      productsPage.pageTitle
     ).toHaveText("Products");
 
   });
 
-
   test("Show filter", async ({ page }) => {
 
+    const productsPage = new ProductsPage(page);
+
     await expect(
-      page.locator(".sort-wrap")
+      productsPage.filter
     ).toBeVisible();
 
   });
-
 
   test("Show all products", async ({ page }) => {
 
-  const productCards = page.locator(
-    '[data-test="inventory-item"]'
-  );
+    const productsPage = new ProductsPage(page);
 
-  await expect(productCards)
-    .toHaveCount(productList.length);
+    const productCards =
+      productsPage.products;
 
-  for (let i = 0; i < productList.length; i++) {
+    await expect(productCards)
+      .toHaveCount(productList.length);
 
-    const product = productCards.nth(i);
 
-    // Product name
-    await expect(
-      product.locator('[data-test="inventory-item-name"]')
-    ).toHaveText(productList[i].name);
+    for (let i = 0; i < productList.length; i++) {
 
-    // Product description
-    await expect(
-      product.locator('[data-test="inventory-item-desc"]')
-    ).toContainText(productList[i].description);
+      const product =
+        productCards.nth(i);
 
-    // Product price
-    await expect(
-      product.locator('[data-test="inventory-item-price"]')
-    ).toHaveText(productList[i].price);
 
-    // Product picture
-    await expect(
-      product.locator('[data-test="item-img-link"]')
-    ).toBeVisible();
+      // Product name
+      await expect(
+        product.locator(
+          '[data-test="inventory-item-name"]'
+        )
+      ).toHaveText(
+        productList[i].name
+      );
 
-    // Add to Cart or Remove button
-    const addToCartButton = product.locator('.item-btn');
-    const removeButton = product.locator('.item-btn.is-remove');
 
-    const isAddToCartVisible =
-      await addToCartButton.isVisible();
+      // Product description
+      await expect(
+        product.locator(
+          '[data-test="inventory-item-desc"]'
+        )
+      ).toContainText(
+        productList[i].description
+      );
 
-    if (isAddToCartVisible) {
 
-      await expect(addToCartButton)
-        .toContainText("Add to cart");
+      // Product price
+      await expect(
+        product.locator(
+          '[data-test="inventory-item-price"]'
+        )
+      ).toHaveText(
+        productList[i].price
+      );
 
-    } else {
 
-      await expect(removeButton)
-        .toBeVisible();
+      // Product picture
+      await expect(
+        product.locator(
+          '[data-test="item-img-link"]'
+        )
+      ).toBeVisible();
 
-      await expect(removeButton)
-        .toContainText("Remove");
+
+      // Add to Cart or Remove button
+      const addToCartButton =
+        product.locator(".item-btn");
+
+      const removeButton =
+        product.locator(".item-btn.is-remove");
+
+
+      const isAddToCartVisible =
+        await addToCartButton.isVisible();
+
+
+      if (isAddToCartVisible) {
+
+        await expect(addToCartButton)
+          .toContainText("Add to cart");
+
+      } else {
+
+        await expect(removeButton)
+          .toBeVisible();
+
+        await expect(removeButton)
+          .toContainText("Remove");
+
+      }
 
     }
 
-  }
+  });
 
-});
+  test("Show Footer", async ({ page }) => {
 
-test("Show Footer", async ({ page }) => {
-  
-  await expect(page.locator('[data-test="footer"]')).toBeVisible();
-});
+    const productsPage = new ProductsPage(page);
 
-test("Show Footer icons", async ({ page }) => {
-
-  await expect(page.locator('[data-test="social-twitter"]')).toBeVisible();
-  await expect(page.locator('[data-test="social-facebook"]')).toBeVisible();
-  await expect(page.locator('[data-test="social-linkedin"]')).toBeVisible();
-});
-
-test("Show Footer text", async ({ page }) => {
-
-  await expect(page.locator('[data-test="footer-copy"]')).toHaveText(
-    "(c) 2026 TTACart - The Testing Academy. All Rights Reserved. Terms of Service | Privacy Policy",
-  );
-});
+    await expect(
+      productsPage.footer
+    ).toBeVisible();
 
   });
+
+  test("Show Footer icons", async ({ page }) => {
+
+    const productsPage = new ProductsPage(page);
+
+    await expect(
+      productsPage.twitterIcon
+    ).toBeVisible();
+
+    await expect(
+      productsPage.facebookIcon
+    ).toBeVisible();
+
+    await expect(
+      productsPage.linkedinIcon
+    ).toBeVisible();
+
+  });
+
+  test("Show Footer text", async ({ page }) => {
+
+    const productsPage = new ProductsPage(page);
+
+    await expect(
+      productsPage.footerText
+    ).toHaveText(
+      "(c) 2026 TTACart - The Testing Academy. All Rights Reserved. Terms of Service | Privacy Policy"
+    );
+
+  });
+
+});
