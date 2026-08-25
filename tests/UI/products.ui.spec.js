@@ -1,5 +1,4 @@
 import { test, expect } from "@playwright/test";
-
 import users from "../../test-data/user.js";
 import products from "../../test-data/products.js";
 
@@ -15,14 +14,8 @@ test.describe("Products Page UI Tests", () => {
     const loginPage = new LoginPage(page);
 
     await loginPage.open();
-
-    await loginPage.login(
-      users.standardUser.username,
-      users.standardUser.password
-    );
-
-    await expect(page)
-      .toHaveURL(/inventory/);
+    await loginPage.login( users.standardUser.username, users.standardUser.password );
+    await expect(page) .toHaveURL(/inventory/);
 
   });
 
@@ -30,9 +23,7 @@ test.describe("Products Page UI Tests", () => {
 
     const productsPage = new ProductsPage(page);
 
-    await expect(
-      productsPage.burgerMenuButton
-    ).toBeVisible();
+    await expect( productsPage.burgerMenuButton ).toBeVisible();
 
   });
 
@@ -40,9 +31,7 @@ test.describe("Products Page UI Tests", () => {
 
     const productsPage = new ProductsPage(page);
 
-    await expect(
-      productsPage.brandTitle
-    ).toHaveText(/TTACart/);
+    await expect( productsPage.brandTitle ).toHaveText(/TTACart/);
 
   });
 
@@ -50,9 +39,7 @@ test.describe("Products Page UI Tests", () => {
 
     const productsPage = new ProductsPage(page);
 
-    await expect(
-      productsPage.cart
-    ).toBeVisible();
+    await expect( productsPage.cart ).toBeVisible();
 
   });
 
@@ -60,9 +47,7 @@ test.describe("Products Page UI Tests", () => {
 
     const productsPage = new ProductsPage(page);
 
-    await expect(
-      productsPage.pageTitle
-    ).toHaveText("Products");
+    await expect( productsPage.pageTitle ).toHaveText("Products");
 
   });
 
@@ -70,91 +55,46 @@ test.describe("Products Page UI Tests", () => {
 
     const productsPage = new ProductsPage(page);
 
-    await expect(
-      productsPage.filter
-    ).toBeVisible();
+    await expect( productsPage.filter ).toBeVisible();
 
   });
 
   test("Show all products", async ({ page }) => {
 
     const productsPage = new ProductsPage(page);
+    const productCards = productsPage.products;
 
-    const productCards =
-      productsPage.products;
-
-    await expect(productCards)
-      .toHaveCount(productList.length);
-
+    await expect(productCards) .toHaveCount(productList.length);
 
     for (let i = 0; i < productList.length; i++) {
 
-      const product =
-        productCards.nth(i);
-
+      const product = productCards.nth(i);
 
       // Product name
-      await expect(
-        product.locator(
-          '[data-test="inventory-item-name"]'
-        )
-      ).toHaveText(
-        productList[i].name
-      );
-
+      await expect( product.locator( '[data-test="inventory-item-name"]' ) ).toHaveText( productList[i].name );
 
       // Product description
-      await expect(
-        product.locator(
-          '[data-test="inventory-item-desc"]'
-        )
-      ).toContainText(
-        productList[i].description
-      );
-
+      await expect( product.locator( '[data-test="inventory-item-desc"]' ) ).toContainText( productList[i].description );
 
       // Product price
-      await expect(
-        product.locator(
-          '[data-test="inventory-item-price"]'
-        )
-      ).toHaveText(
-        productList[i].price
-      );
-
+      await expect( product.locator( '[data-test="inventory-item-price"]' ) ).toHaveText( productList[i].price );
 
       // Product picture
-      await expect(
-        product.locator(
-          '[data-test="item-img-link"]'
-        )
-      ).toBeVisible();
-
+      await expect( product.locator( '[data-test="item-img-link"]' ) ).toBeVisible();
 
       // Add to Cart or Remove button
-      const addToCartButton =
-        product.locator(".item-btn");
-
-      const removeButton =
-        product.locator(".item-btn.is-remove");
-
-
-      const isAddToCartVisible =
-        await addToCartButton.isVisible();
-
+      const addToCartButton = product.locator(".item-btn");
+      const removeButton = product.locator(".item-btn.is-remove");
+      const isAddToCartVisible = await addToCartButton.isVisible();
 
       if (isAddToCartVisible) {
 
-        await expect(addToCartButton)
-          .toContainText("Add to cart");
+        await expect(addToCartButton) .toContainText("Add to cart");
 
       } else {
 
-        await expect(removeButton)
-          .toBeVisible();
-
-        await expect(removeButton)
-          .toContainText("Remove");
+        await expect(removeButton) .toBeVisible();
+        await expect(removeButton) .toContainText("Remove");
 
       }
 
@@ -166,9 +106,7 @@ test.describe("Products Page UI Tests", () => {
 
     const productsPage = new ProductsPage(page);
 
-    await expect(
-      productsPage.footer
-    ).toBeVisible();
+    await expect( productsPage.footer ).toBeVisible();
 
   });
 
@@ -176,17 +114,9 @@ test.describe("Products Page UI Tests", () => {
 
     const productsPage = new ProductsPage(page);
 
-    await expect(
-      productsPage.twitterIcon
-    ).toBeVisible();
-
-    await expect(
-      productsPage.facebookIcon
-    ).toBeVisible();
-
-    await expect(
-      productsPage.linkedinIcon
-    ).toBeVisible();
+    await expect( productsPage.twitterIcon ).toBeVisible();
+    await expect( productsPage.facebookIcon ).toBeVisible();
+    await expect( productsPage.linkedinIcon ).toBeVisible();
 
   });
 
@@ -194,11 +124,7 @@ test.describe("Products Page UI Tests", () => {
 
     const productsPage = new ProductsPage(page);
 
-    await expect(
-      productsPage.footerText
-    ).toHaveText(
-      "(c) 2026 TTACart - The Testing Academy. All Rights Reserved. Terms of Service | Privacy Policy"
-    );
+    await expect( productsPage.footerText ).toHaveText( "(c) 2026 TTACart - The Testing Academy. All Rights Reserved. Terms of Service | Privacy Policy" );
 
   });
 

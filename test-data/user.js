@@ -1,8 +1,14 @@
 const users = {
 
   standardUser: {
-    username: 'standard_user',
-    password: 'tta_secret'
+    username: "standard_user",
+    password: "tta_secret",
+
+    checkout: {
+      firstName: "Samir",
+      lastName: "Malhotra",
+      postalCode: "700001"
+    }
   },
 
   lockedUser: {
