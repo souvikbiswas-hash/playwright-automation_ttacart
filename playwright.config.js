@@ -21,7 +21,7 @@ export default defineConfig({
    baseURL:
   'https://app.thetestingacademy.com/playwright/ttacart/',
 
-    headless: false,
+    // headless: false,
 
     // screenshot: 'only-on-failure',
 
